@@ -3,10 +3,12 @@
 #include <cstdint>
 #include <vector>
 
+#define INPUT_FILE "../../input/day2.txt"
+
 int part1()
 {
 	std::ifstream input;
-	input.open( "input.txt" );
+	input.open( INPUT_FILE );
 	if( !input.is_open() )
 	{
 		std::cerr << "Unable to find input.txt" << std::endl;
@@ -69,7 +71,7 @@ uint32_t hamming_distance
 int part2()
 {
 	std::ifstream input;
-	input.open( "input.txt" );
+	input.open( INPUT_FILE );
 	if( !input.is_open() )
 	{
 		std::cerr << "Unable to find input.txt" << std::endl;

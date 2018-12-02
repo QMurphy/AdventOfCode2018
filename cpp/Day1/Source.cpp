@@ -3,10 +3,12 @@
 #include <cstdint>
 #include <set>
 
+#define INPUT_FILE "../../input/day1.txt"
+
 int part1()
 {
 	std::ifstream input;
-	input.open( "input.txt" );
+	input.open( INPUT_FILE );
 	if( !input.is_open() )
 	{
 		std::cerr << "Unable to find input.txt" << std::endl;
@@ -32,7 +34,7 @@ int part1()
 int part2()
 {
 	std::ifstream input;
-	input.open( "input.txt" );
+	input.open( INPUT_FILE );
 	if( !input.is_open() )
 	{
 		std::cerr << "Unable to find input.txt" << std::endl;
