@@ -58,7 +58,7 @@ pub fn part2() -> Result< String, () >
     let input_file = File::open( INPUT_FILE ).expect( "Unable to open input file" );
     let reader = BufReader::new( input_file );
 
-    let mut ids : Vec<String> = Vec::new();
+    let mut ids: Vec<String> = Vec::new();
     for line in reader.lines()
     {
         ids.push( line.unwrap() );
@@ -87,8 +87,8 @@ pub fn part2() -> Result< String, () >
 
 fn hamming_distance
     (
-    str1 : &str,
-    str2 : &str
+    str1: &str,
+    str2: &str
     ) -> Result<u32, ()>
 {
     let mut dist = 0;
@@ -109,11 +109,11 @@ fn hamming_distance
 
 fn get_common_chars
     (
-    str1 : &str,
-    str2 : &str
+    str1: &str,
+    str2: &str
     ) -> String
 {
-    let mut common : String = String::new();
+    let mut common: String = String::new();
     if str1.len() != str2.len()
     {
         return common;

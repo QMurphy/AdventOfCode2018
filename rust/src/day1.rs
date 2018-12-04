@@ -10,7 +10,7 @@ pub fn part1() -> i32
     let input_file = File::open( INPUT_FILE ).expect( "Unable to open day1.txt" );
     let reader = BufReader::new( input_file );
     
-    let mut freq : i32 = 0;
+    let mut freq: i32 = 0;
     for line in reader.lines()
     {
         let delta = line.unwrap().parse::<i32>().unwrap();
@@ -23,7 +23,7 @@ pub fn part1() -> i32
 pub fn part2() -> i32
 {
     let mut all_freqs = HashSet::new();
-    let mut freq : i32 = 0;
+    let mut freq: i32 = 0;
     all_freqs.insert( freq ); // Initial frequency
     let mut dup_found = false;
 

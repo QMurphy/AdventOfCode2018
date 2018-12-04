@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["Quinn Murphy <qmurphy64@gmail.com>"]
 
 [dependencies]
+ndarray = "0.12.1"
