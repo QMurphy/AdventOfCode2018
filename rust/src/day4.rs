@@ -20,14 +20,15 @@ pub fn part1() -> u32
     let mut events: Vec<GuardEvent> = Vec::new();
     for line in reader.lines()
     {
-        let event = line.unwrap().parse::<GuardEvent>().unwrap();
+        // Parse a line of input text into a GuardEvent
+        let event = line.unwrap().parse::<GuardEvent>().expect( "Unable to parse GuardEvent" );
         events.push( event );
     }
 
-    // Sort list of events
+    // Sort list of events by timestamp
     events.sort();
 
-    // Build a hashmap where the key is the guard and the key is a vec of ranges that they're asleep
+    // Build a hashmap where the key is the guard and the key is a vec of ranges that they're asleep (a list of naps)
     let mut guard_sleep_sched: HashMap<u16, Vec<Range<u16>>> = HashMap::new();
     let mut guard_on_duty: u16 = 0;
     let mut sleep_start: u16 = 0;
@@ -35,8 +36,13 @@ pub fn part1() -> u32
     {
         match event.event
         {
+            // Record which guard the next sleep & wake events apply to
             GuardEventType::BEGIN( id ) => guard_on_duty = id,
+
+            // Record when the guard went to sleep
             GuardEventType::SLEEP => sleep_start = event.timestamp.time().minute() as u16,
+
+            // Record the times that the guard was asleep and add to our list
             GuardEventType::WAKE => {
                 let sleep_end = event.timestamp.time().minute() as u16;
                 let sleep_range = Range { start: sleep_start, end: sleep_end };
@@ -53,13 +59,17 @@ pub fn part1() -> u32
                 }
                 */
 
+                // If we've seen this guard before...
                 if guard_sleep_sched.contains_key( &guard_on_duty )
                 {
+                    // Add this nap to our list of naps
                     let mut v = guard_sleep_sched.get_mut( &guard_on_duty ).unwrap();
                     v.push( sleep_range );
                 }
+                // Otherwise...
                 else
                 {
+                    // Create a new list of naps and add the first one in
                     let mut v: Vec<Range<u16>> = Vec::new();
                     v.push( sleep_range );
                     guard_sleep_sched.insert( guard_on_duty, v );
@@ -71,6 +81,8 @@ pub fn part1() -> u32
     // Find the guard who sleeps the most
     let mut sleepiest_guard = 0;
     let mut min_total = 0;
+
+    // For each guard
     for ( guard, naps ) in &guard_sleep_sched
     {
         // Sum their sleep
@@ -89,8 +101,8 @@ pub fn part1() -> u32
     }
     println!( "Guard {} slept for {} min total", sleepiest_guard, min_total );
 
-    // Find the most common minute asleep
-    let naps = guard_sleep_sched.get( &sleepiest_guard ).unwrap();
+    // Compute how often the guard was asleep at each minute
+    let naps = guard_sleep_sched.get( &sleepiest_guard ).expect( "Unable to pull naps from the map" );
     let mut min_counter: [u32; 60] = [0; 60];
     for nap in naps
     {
@@ -99,10 +111,12 @@ pub fn part1() -> u32
             min_counter[min as usize] += 1;
         }
     }
-    let min_mode = min_counter.iter().enumerate().max_by( |x, y| (x.1).cmp(y.1) ).unwrap().0;
-    println!( "Most common minute asleep was {}", min_mode );
 
-    return sleepiest_guard as u32 * min_mode as u32;
+    // Find the maximum minute
+    let most_common_min = min_counter.iter().enumerate().max_by( |x, y| (x.1).cmp(y.1) ).unwrap().0;
+    println!( "Most common minute asleep was {}", most_common_min );
+
+    return sleepiest_guard as u32 * most_common_min as u32;
 }
 
 pub fn part2() -> u32
@@ -114,14 +128,15 @@ pub fn part2() -> u32
     let mut events: Vec<GuardEvent> = Vec::new();
     for line in reader.lines()
     {
-        let event = line.unwrap().parse::<GuardEvent>().unwrap();
+        // Parse a line of input text into a GuardEvent
+        let event = line.unwrap().parse::<GuardEvent>().expect( "Unable to parse GuardEvent" );
         events.push( event );
     }
 
-    // Sort list of events
+    // Sort list of events by timestamp
     events.sort();
 
-    // Build a hashmap where the key is the guard and the key is a vec of ranges that they're asleep
+    // Build a hashmap where the key is the guard and the key is a vec of ranges that they're asleep (a list of naps)
     let mut guard_sleep_sched: HashMap<u16, Vec<Range<u16>>> = HashMap::new();
     let mut guard_on_duty: u16 = 0;
     let mut sleep_start: u16 = 0;
@@ -129,8 +144,13 @@ pub fn part2() -> u32
     {
         match event.event
         {
+            // Record which guard the next sleep & wake events apply to
             GuardEventType::BEGIN( id ) => guard_on_duty = id,
+
+            // Record when the guard went to sleep
             GuardEventType::SLEEP => sleep_start = event.timestamp.time().minute() as u16,
+
+            // Record the times that the guard was asleep and add to our list
             GuardEventType::WAKE => {
                 let sleep_end = event.timestamp.time().minute() as u16;
                 let sleep_range = Range { start: sleep_start, end: sleep_end };
@@ -147,13 +167,17 @@ pub fn part2() -> u32
                 }
                 */
 
+                // If we've seen this guard before...
                 if guard_sleep_sched.contains_key( &guard_on_duty )
                 {
+                    // Add this nap to our list of naps
                     let mut v = guard_sleep_sched.get_mut( &guard_on_duty ).unwrap();
                     v.push( sleep_range );
                 }
+                // Otherwise...
                 else
                 {
+                    // Create a new list of naps and add the first one in
                     let mut v: Vec<Range<u16>> = Vec::new();
                     v.push( sleep_range );
                     guard_sleep_sched.insert( guard_on_duty, v );
@@ -162,24 +186,34 @@ pub fn part2() -> u32
         }
     }
     
-    // Find the guard who sleeps the most
+    // Find the minute with the most sleep
     let mut sleepiest_guard = 0;
     let mut highest_sleep_min = 0;
     let mut highest_sleep_count = 0;
+
+    // For each guard
     for ( guard, naps ) in &guard_sleep_sched
     {
+        // Array of minutes initialized to 0
         let mut min_counter: [u32; 60] = [0; 60];
+
+        // For each nap in the list
         for nap in naps
         {
+            // Increment the minutes that the guard was asleep
             for min in nap.start..nap.end
             {
                 min_counter[min as usize] += 1;
             }
         }
+
+        // Find the mode of minutes that the guard was asleep
         let min_mode = min_counter.iter().enumerate().max_by( |x, y| (x.1).cmp(y.1) ).unwrap();
         
+        // If this is higher than the previous highest-quantity mode...
         if highest_sleep_count < *min_mode.1
         {
+            // Overwrite it and record which minute, how many occurances, and which guard
             highest_sleep_min = min_mode.0;
             highest_sleep_count = *min_mode.1;
             sleepiest_guard = *guard;
