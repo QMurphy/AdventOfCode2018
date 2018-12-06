@@ -47,33 +47,8 @@ pub fn part1() -> u32
                 let sleep_end = event.timestamp.time().minute() as u16;
                 let sleep_range = Range { start: sleep_start, end: sleep_end };
                 
-                /* This fails the borrow checker
-                match guard_sleep_sched.get_mut( &guard_on_duty )
-                {
-                    Some( v ) => v.push( sleep_range ),
-                    None => {
-                        let mut v: Vec<Range<u16>> = Vec::new();
-                        v.push( sleep_range );
-                        guard_sleep_sched.insert( guard_on_duty, v );
-                    }
-                }
-                */
-
-                // If we've seen this guard before...
-                if guard_sleep_sched.contains_key( &guard_on_duty )
-                {
-                    // Add this nap to our list of naps
-                    let mut v = guard_sleep_sched.get_mut( &guard_on_duty ).unwrap();
-                    v.push( sleep_range );
-                }
-                // Otherwise...
-                else
-                {
-                    // Create a new list of naps and add the first one in
-                    let mut v: Vec<Range<u16>> = Vec::new();
-                    v.push( sleep_range );
-                    guard_sleep_sched.insert( guard_on_duty, v );
-                }
+                let v = guard_sleep_sched.entry( guard_on_duty ).or_insert_with( Vec::new );
+                v.push( sleep_range );
             }
         }
     }
@@ -155,33 +130,8 @@ pub fn part2() -> u32
                 let sleep_end = event.timestamp.time().minute() as u16;
                 let sleep_range = Range { start: sleep_start, end: sleep_end };
                 
-                /* This fails the borrow checker
-                match guard_sleep_sched.get_mut( &guard_on_duty )
-                {
-                    Some( v ) => v.push( sleep_range ),
-                    None => {
-                        let mut v: Vec<Range<u16>> = Vec::new();
-                        v.push( sleep_range );
-                        guard_sleep_sched.insert( guard_on_duty, v );
-                    }
-                }
-                */
-
-                // If we've seen this guard before...
-                if guard_sleep_sched.contains_key( &guard_on_duty )
-                {
-                    // Add this nap to our list of naps
-                    let mut v = guard_sleep_sched.get_mut( &guard_on_duty ).unwrap();
-                    v.push( sleep_range );
-                }
-                // Otherwise...
-                else
-                {
-                    // Create a new list of naps and add the first one in
-                    let mut v: Vec<Range<u16>> = Vec::new();
-                    v.push( sleep_range );
-                    guard_sleep_sched.insert( guard_on_duty, v );
-                }
+                let v = guard_sleep_sched.entry( guard_on_duty ).or_insert_with( Vec::new );
+                v.push( sleep_range );
             }
         }
     }
